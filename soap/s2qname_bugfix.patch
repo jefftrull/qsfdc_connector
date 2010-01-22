@@ -1,0 +1,11 @@
+--- soapC.cpp.orig	2009-11-10 20:19:49.000000000 -0800
++++ soapC.cpp	2009-11-10 20:31:29.000000000 -0800
+@@ -9033,7 +9033,7 @@
+ 	if (!s)
+ 		return soap->error;
+ 	soap_s2QName(soap, s, &t, -1, -1);
+-	map = soap_code(soap_codes_ns1__soapType, t);
++	map = soap_code(soap_codes_ns1__soapType, s);
+ 	if (map)
+ 		*a = (enum ns1__soapType)map->code;
+ 	else

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.6)
+project(SFDC)
+add_subdirectory(soap)
+add_subdirectory(lib)
+add_subdirectory(sfakonadi)
+add_subdirectory(main)

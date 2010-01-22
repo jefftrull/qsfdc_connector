@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Akonadi Salesforce.com Contacts Resource
+Comment=Access Salesforce as a vcard resource via Web Services API
+Type=AkonadiResource
+Exec=akonadi_sfdc_resource
+Icon=text-directory
+
+X-Akonadi-MimeTypes=text/directory
+X-Akonadi-Capabilities=Resource
+X-Akonadi-Identifier=akonadi_sfdc_resource
+X-Ubuntu-Gettext-Domain=desktop_kdesdk

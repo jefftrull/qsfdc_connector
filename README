@@ -1,0 +1,32 @@
+Copyright 2010 Jeffrey Elliot Trull <linmodemstudent@gmail.com>
+
+This package contains source for two methods for accessing a Salesforce.com instance via Qt/KDE:
+
+1) an implementation of QSqlDriver/QSqlResult for Salesforce.com that can be used to build, among other things,
+   a QSqlQueryModel displaying the contents of a Salesforce "object" (table), with a sample program that uses it.
+
+2) a KDE Akonadi Contact resource that uses the Contacts table in a Salesforce.com instance as a data source
+
+Dependencies:
+A recent version of gSoap (at or above 2.7.10) is required, as well as a Salesforce "Partner WSDL" (you can download
+this from under the Setup menu in your instance).  Edit soap/CMakeLists.txt to reflect the path to this file.
+
+Compiling:
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+
+(As of version 0.1 "make install" only installs the Akonadi resource.  To try the sample QSqlDriver program, run "main/main" directly)
+
+Directory structure:
+The "soap" directory contains the inputs to gSoap.
+The "lib" directory implements the QSqlDriver/QSqlResult subclasses using the code built in the "soap" directory.
+The "sfakonadi" directory implements the Akonadi resource using the code from the soap directory.
+The "main" directory contains a sample program that uses the QSqlDriver/QSqlResult subclasses to create a QSqlQueryModel
+    for the Contacts object of a user's Salesforce instance.
+
+Licensing:
+Everything except the "main" directory is licensed under the LGPL, v2.1.
+The contents of "main" are licensed under the GPL, v2 "or later".
