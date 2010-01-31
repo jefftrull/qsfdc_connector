@@ -41,9 +41,12 @@ include_directories(
     "../soap"
     "${CMAKE_CURRENT_BINARY_DIR}/../soap"
 )
-include_directories(
-    BEFORE ${GSOAP_INCLUDE_DIR}
-)
+
+if (GSOAP_BUILD_DIR)
+  include_directories(
+    BEFORE ${GSOAP_BUILD_DIR}
+    )
+endif(GSOAP_BUILD_DIR)
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS} -DWITH_OPENSSL" )
 
