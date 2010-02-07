@@ -31,8 +31,8 @@
 int main( int argc, char **argv ) {
   QApplication app(argc, argv);
 
-  SFDCDriver sfdc_driver;
-  QSqlDatabase db = QSqlDatabase::addDatabase(&sfdc_driver, "salesforce.com");
+  SFDCDriver* sfdc_driver = new SFDCDriver;
+  QSqlDatabase db = QSqlDatabase::addDatabase(sfdc_driver, "salesforce.com");
 
   // use UI dialog to get passwords
   QDialog dlg;
@@ -66,7 +66,7 @@ int main( int argc, char **argv ) {
   model->setQuery(querystr, db);
 
   // replace header names with user-friendly "label" of each field
-  QSqlRecord field_info = sfdc_driver.record(tablename);
+  QSqlRecord field_info = sfdc_driver->record(tablename);
   int colno = 0;
   while (colno < model->columnCount()) {
     QString colname = model->headerData(colno, Qt::Horizontal).toString();
