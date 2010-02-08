@@ -78,6 +78,34 @@ QSqlResult* SFDCDriver::createResult() const {
   return new SFDCResult(this);
 }
 
+// utility function to translate SFDC field types to QVariant
+QVariant::Type fieldtype2variant(ns1__fieldType t) {
+  if (t == ns1__fieldType__boolean) {
+    return QVariant::Bool;
+  }
+  else if (t == ns1__fieldType__int_) {
+    return QVariant::Int;
+  }
+  else if (t == ns1__fieldType__double_) {
+    return QVariant::Double;
+  }
+  else if (t == ns1__fieldType__date) {
+    return QVariant::Date;
+  }
+  else if (t == ns1__fieldType__datetime) {
+    return QVariant::DateTime;
+  }
+  else if (t == ns1__fieldType__time) {
+    return QVariant::Time;
+  }
+  else if (t == ns1__fieldType__url) {
+    return QVariant::Url;
+  }
+  // fallback
+  return QVariant::String;
+}
+
+
 // supply the names of all the fields in a record for the given table
 // note: not listed as one of the mandatory things to define, but required for QSqlTableModel (or setTable will fail)
 QSqlRecord SFDCDriver::record ( const QString & tableName ) const {
@@ -100,7 +128,15 @@ QSqlRecord SFDCDriver::record ( const QString & tableName ) const {
   // iterate over fields, creating a QSqlField for each and inserting into the return value
   for (vector<ns1__Field*>::iterator field_it = describe_resp.result->fields.begin();
        field_it != describe_resp.result->fields.end(); ++field_it) {
-    QSqlField field_desc(QString((*field_it)->name.c_str()), QVariant::String);
+    QSqlField field_desc(QString((*field_it)->name.c_str()), fieldtype2variant((*field_it)->type));
+    // add properties from the response object
+    field_desc.setAutoValue((*field_it)->autoNumber);
+    field_desc.setReadOnly((*field_it)->calculated);   // but does not consider the "nillable" property
+    if ((*field_it)->type == ns1__fieldType__double_) {
+      field_desc.setPrecision((*field_it)->precision);
+    }
+    // not sure what to do with length, byteLength, digits, etc. fields at this time
+
     // store the "field label" from SF as the "value" of the field
     field_desc.setValue(QString((*field_it)->label.c_str()));
     field_desc_record.append(field_desc);
