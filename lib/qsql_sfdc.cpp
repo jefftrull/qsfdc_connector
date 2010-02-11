@@ -23,6 +23,8 @@
 #include <QDebug>
 #include <QSqlField>
 #include <QXmlStreamReader>
+#include <QDate>
+#include <QUrl>
 using namespace std;
 
 // Driver stuff
@@ -105,6 +107,34 @@ QVariant::Type fieldtype2variant(ns1__fieldType t) {
   return QVariant::String;
 }
 
+// utility function to translate QStrings to QVariants based on a particular type
+// there's got to be a better way to do this...
+QVariant fieldvalue2variant(QString v, QVariant::Type t) {
+  if (t == QVariant::Bool) {
+    return QVariant(v).toBool();
+  }
+  else if (t == QVariant::Int) {
+    return QVariant(v).toInt();
+  }
+  else if (t == QVariant::Double) {
+    return QVariant(v).toDouble();
+  }
+  else if (t == QVariant::Date) {
+    return QVariant(v).toDate();
+  }
+  else if (t == QVariant::DateTime) {
+    return QVariant(v).toDateTime();
+  }
+  else if (t == QVariant::Time) {
+    return QVariant(v).toTime();
+  }
+  else if (t == QVariant::Url) {
+    return QVariant(v).toUrl();
+  }
+  // fallback
+  return QVariant(v);
+}
+
 
 // supply the names of all the fields in a record for the given table
 // note: not listed as one of the mandatory things to define, but required for QSqlTableModel (or setTable will fail)
@@ -168,8 +198,8 @@ QVariant SFDCResult::data(int index ) {
     xmlr.addExtraNamespaceDeclaration(QXmlStreamNamespaceDeclaration("sf", "whatever"));
     xmlr.readNext();   // go to first token (representing the document start)
     xmlr.readNext();   // this should be the "element"
-    QString fname  = xmlr.name().toString();      // element name with prefix removed
-    return QVariant(xmlr.readElementText());
+    // construct a QVariant of the appropriate type
+    return fieldvalue2variant(xmlr.readElementText(), stored_query_fields.field(index).type());
   }
 
   return QVariant();
