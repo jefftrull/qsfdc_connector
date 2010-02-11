@@ -193,9 +193,11 @@ SFDCResult::~SFDCResult() {
 QVariant SFDCResult::data(int index ) {
   if ((index < stored_query_fields.count()) && !isNull(index)) {
     // so far so good.  Let's see if there's any data
-    QXmlStreamReader xmlr(stored_query_results[stored_query_pos]->__any[index]);
-    // keep it from complaining about the "sf" namespace in front of the fieldname
+    QXmlStreamReader xmlr(QString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>") +  // fake out encoding
+			  QString(stored_query_results[stored_query_pos]->__any[index]));
+    // keep it from complaining about the "sf" or "xsi" namespaces in front of the fieldname
     xmlr.addExtraNamespaceDeclaration(QXmlStreamNamespaceDeclaration("sf", "whatever"));
+    xmlr.addExtraNamespaceDeclaration(QXmlStreamNamespaceDeclaration("xsi", "whatever"));
     xmlr.readNext();   // go to first token (representing the document start)
     xmlr.readNext();   // this should be the "element"
     // construct a QVariant of the appropriate type
@@ -216,9 +218,11 @@ bool SFDCResult::isNull(int index ) {
   }
 
   // also return true if the field has no contents (string returned, but no text in the element)
-  QXmlStreamReader xmlr(stored_query_results[stored_query_pos]->__any[index]);
-  // keep it from complaining about the "sf" namespace in front of the fieldname
+  QXmlStreamReader xmlr(QString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>") + // fake out encoding
+			QString(stored_query_results[stored_query_pos]->__any[index]));
+  // keep it from complaining about the "sf" and "xsi" namespaces in front of the fieldname
   xmlr.addExtraNamespaceDeclaration(QXmlStreamNamespaceDeclaration("sf", "whatever"));
+  xmlr.addExtraNamespaceDeclaration(QXmlStreamNamespaceDeclaration("xsi", "whatever"));
   xmlr.readNext();   // go to first token (representing the document start)
   xmlr.readNext();   // this should be the "element"
   if (QString(xmlr.readElementText()).isEmpty()) {
