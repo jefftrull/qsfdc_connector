@@ -203,10 +203,10 @@ void ForceProxy::restoreProxyHeader() {
   // This is ugly, but if I don't do this the soap header becomes NULL again after every call,
   // and we lose the session ID (and our requests fail!)
   // is there some better way?
-  soap_header(&allowFieldTruncationHeader, &assignmentRuleHeader,
+  soap_header(&allOrNoneHeader, &allowFieldTruncationHeader, &assignmentRuleHeader,
 	      &callOptions,    // Partner WSDL only
-	      &debuggingHeader,
-	      &debuggingInfo,	&emailHeader, &localeOptions,
+	      &debuggingHeader, &debuggingInfo,	&disableFeedTrackingHeader,
+	      &emailHeader, &localeOptions,
 	      &loginScopeHeader, &mruHeader, &packageVersionHeader,
 	      &queryOptions, &sessionHeader, &userTerritoryDeleteHeader);
 }

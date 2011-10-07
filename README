@@ -14,7 +14,7 @@ this from under the Setup menu in your instance).  Edit soap/CMakeLists.txt to r
 Compiling:
 mkdir build
 cd build
-cmake ..
+cmake [-DGSOAP_BUILD_DIR=/path/to/downloaded/gsoap-X.Y/gsoap] ..
 make
 sudo make install
 

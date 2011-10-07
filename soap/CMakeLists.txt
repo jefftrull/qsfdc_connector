@@ -33,7 +33,7 @@ execute_process(COMMAND ${SOAPCPP2} -v
 		RESULT_VARIABLE GSOAP_VER_S1_RESULT
 		ERROR_VARIABLE GSOAP_VER_S1_OUTPUT)
 execute_process(COMMAND echo "${GSOAP_VER_S1_OUTPUT}"
-                COMMAND awk "/The gSOAP Stub and Skeleton Compiler/ {print $12}"
+                COMMAND awk "/The gSOAP (Stub and Skeleton Compiler)|(code generator)/ {print $12}"
 		OUTPUT_VARIABLE GSOAP_VER OUTPUT_STRIP_TRAILING_WHITESPACE
 		RESULT_VARIABLE GSOAP_VER_S2_RESULT)
 
@@ -52,11 +52,17 @@ add_custom_command(OUTPUT myorg.h
 add_custom_command(OUTPUT soapC.cpp soapSoapBindingProxy.cpp soapSoapBindingProxy.h SoapBinding.nsmap soapH.h soapStub.h
                    COMMAND ${SOAPCPP2} -I${GSOAP_IMPORT_DIR} -i -C -L -x -w myorg.h
 		   DEPENDS myorg.h)
-# apply the soapC.cpp hack for gsoap bug 2896129
-add_custom_command(OUTPUT soapC_patched.cpp soapC_patched.cpp.orig
-                   COMMAND cp soapC.cpp soapC_patched.cpp
-		   COMMAND patch soapC_patched.cpp ${CMAKE_CURRENT_SOURCE_DIR}/s2qname_bugfix.patch
-		   DEPENDS soapC.cpp s2qname_bugfix.patch)
+# apply the soapC.cpp hack for gsoap bug 2896129 (fixed in 2.7.17)
+if (${GSOAP_VER} VERSION_LESS 2.7.17)
+  add_custom_command(OUTPUT soapC_patched.cpp soapC_patched.cpp.orig
+                     COMMAND cp soapC.cpp soapC_patched.cpp
+                     COMMAND patch soapC_patched.cpp ${CMAKE_CURRENT_SOURCE_DIR}/s2qname_bugfix.patch
+                     DEPENDS soapC.cpp s2qname_bugfix.patch)
+else()
+  add_custom_command(OUTPUT soapC_patched.cpp soapC_patched.cpp.orig
+                     COMMAND cp soapC.cpp soapC_patched.cpp
+                     DEPENDS soapC.cpp)
+endif()
 
 
 # to get soapSoapBindingProxy.h (generated)

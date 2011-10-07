@@ -65,11 +65,13 @@ private:
   _ns1__SessionHeader sessionHeader;  // In here we record the session ID after a successful login
 
   // the rest of the header values (allowed to default)
+  _ns1__AllOrNoneHeader allOrNoneHeader;
   _ns1__AllowFieldTruncationHeader allowFieldTruncationHeader;
   _ns1__AssignmentRuleHeader assignmentRuleHeader;
   _ns1__CallOptions callOptions;   // Partner WSDL only
   _ns1__DebuggingHeader debuggingHeader;
   _ns1__DebuggingInfo debuggingInfo;
+  _ns1__DisableFeedTrackingHeader disableFeedTrackingHeader;
   _ns1__EmailHeader emailHeader;
   _ns1__PackageVersionHeader packageVersionHeader;
   _ns1__MruHeader mruHeader;
