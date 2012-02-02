@@ -47,8 +47,9 @@ int main( int argc, char **argv ) {
     return 1;
   }
 
-  db.open(ui.eAccount->text(),
-	  ui.ePass->text() + ui.eToken->text());
+  if (!db.open(ui.eAccount->text(), ui.ePass->text() + ui.eToken->text()))
+    // something went wrong in the login process
+    return 1;
 
   // not using a QSqlTableModel here because it really seems to want to pull all the columns in
   // even removing the columns causes it to issue new sObject describe requests
