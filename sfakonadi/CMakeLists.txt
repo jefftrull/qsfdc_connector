@@ -8,9 +8,7 @@ include(MacroOptionalAddSubdirectory)
 include(CheckIncludeFiles)
 find_package (KdepimLibs REQUIRED)
 
-find_program(XSLTPROC_EXECUTABLE xsltproc)
-macro_log_feature(XSLTPROC_EXECUTABLE "xsltproc" "The command line XSLT processor from libxslt" "http://xmlsoft.org/XSLT/" FALSE "" "Needed for building Akonadi resources. Recommended.")
-
+macro_log_feature(XSLTPROC_EXECUTABLE "xsltproc" "The command line XSLT processor from libxslt" "http://xmlsoft.org/XSLT/" FALSE "" "Needed for building Akonadi resources.")
 if (XSLTPROC_EXECUTABLE)
   # generates a D-Bus interface description from a KConfigXT file
   macro( kcfg_generate_dbus_interface _kcfg _name )
@@ -24,6 +22,11 @@ if (XSLTPROC_EXECUTABLE)
               ${_kcfg}
     )
   endmacro( kcfg_generate_dbus_interface )
+  kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/sfdcresource.kcfg org.kde.Akonadi.SFDC.Settings)
+  # use xsltproc to discover the SFDC API version
+
+else()
+  message( WARNING "xsltproc not found - resource config file sfdcresource.kcfg will not be generated. Also, the Force.com API version will not be autodetected" )
 endif (XSLTPROC_EXECUTABLE)
 
 if(WIN32)
@@ -62,7 +65,6 @@ install( FILES sfdcresource.desktop DESTINATION "${CMAKE_INSTALL_PREFIX}/share/a
 kde4_add_ui_files( sfdcresource_SRCS sfdc.ui )
 
 kde4_add_kcfg_files(sfdcresource_SRCS settings.kcfgc)
-kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/sfdcresource.kcfg org.kde.Akonadi.SFDC.Settings)
 qt4_add_dbus_adaptor(sfdcresource_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SFDC.Settings.xml settings.h Settings
 )

@@ -208,7 +208,11 @@ void ForceProxy::restoreProxyHeader() {
 	      &debuggingHeader, &debuggingInfo,	&disableFeedTrackingHeader,
 	      &emailHeader, &localeOptions,
 	      &loginScopeHeader, &mruHeader, &packageVersionHeader,
-	      &queryOptions, &sessionHeader, &userTerritoryDeleteHeader);
+	      &queryOptions, &sessionHeader,
+#ifdef STREAMING_API_PRESENT
+	      &streamingEnabledHeader,
+#endif
+	      &userTerritoryDeleteHeader);
 }
 
 bool ForceProxy::isLoggedIn() const {

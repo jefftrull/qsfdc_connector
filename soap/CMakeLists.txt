@@ -64,6 +64,16 @@ else()
                      DEPENDS soapC.cpp)
 endif()
 
+# if we have xsltproc, determine the API version of the supplied WSDL
+if (XSLTPROC_EXECUTABLE)
+  execute_process(COMMAND ${XSLTPROC_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/api_version.xsl ${CMAKE_CURRENT_SOURCE_DIR}/${WSDL}
+                  OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE API_VER)
+  if( NOT ${API_VER} VERSION_LESS 23.0 )
+    message("Assuming (based on API version ${API_VER}) that the streaming API is in the SOAP header")
+    add_definitions( -DSTREAMING_API_PRESENT )
+  endif()
+endif()
+
 
 # to get soapSoapBindingProxy.h (generated)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

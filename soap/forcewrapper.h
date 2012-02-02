@@ -77,6 +77,7 @@ private:
   _ns1__MruHeader mruHeader;
   _ns1__QueryOptions queryOptions;
   _ns1__UserTerritoryDeleteHeader userTerritoryDeleteHeader;
+  _ns1__StreamingEnabledHeader streamingEnabledHeader;
   _ns1__LocaleOptions localeOptions;
   _ns1__LoginScopeHeader loginScopeHeader;
 
