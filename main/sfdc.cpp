@@ -26,6 +26,7 @@
 #include <QSqlQuery>
 #include <QSqlField>
 #include <QHeaderView>
+#include <QMessageBox>
 #include "ui_sfdc.h"
 
 int main( int argc, char **argv ) {
@@ -61,6 +62,7 @@ int main( int argc, char **argv ) {
   QStringList queryfields;
   queryfields << "Id" << "Name" << "Phone" << "Email";
   queryfields << "MailingStreet" << "MailingCity" << "MailingState" << "MailingPostalCode" << "MailingCountry";
+
   QString querystr("select ");
   querystr += queryfields.join(", ");
   querystr += " from " + tablename;
@@ -78,13 +80,18 @@ int main( int argc, char **argv ) {
     }
   }
     
-  QTableView *view = new QTableView;
-  view->setModel(model);
-  view->resizeColumnsToContents();
-  view->resize(view->horizontalHeader()->length(), 200);
-  view->setWindowTitle("Salesforce Contacts");
-  view->show();
-
-  return app.exec();
-
+  if (model->rowCount() > 0) {
+    QTableView *view = new QTableView;
+    view->setModel(model);
+    view->resizeColumnsToContents();
+    view->resize(view->horizontalHeader()->length(), 200);
+    view->setWindowTitle("Salesforce Contacts");
+    view->show();
+    return app.exec();
+  } else {
+    // a note of explanation before we exit
+    QMessageBox noDataMsg;
+    noDataMsg.setText("SObject " + tablename + " contains no data");
+    return noDataMsg.exec();
+  }
 }

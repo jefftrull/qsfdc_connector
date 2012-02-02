@@ -255,7 +255,6 @@ bool SFDCResult::reset(const QString & querystr ) {
 
   QStringList query_fieldnames = fieldlist.split(QRegExp("\\s?,\\s?"));  // split on commas with optional spaces
 
-
   // perform the query through SOAP
   const SFDCDriver* drv = dynamic_cast<const SFDCDriver*>(driver());  // a base class method, so must dyn cast to derived
   ForceProxy* proxy = drv->getProxy();
@@ -286,7 +285,11 @@ bool SFDCResult::reset(const QString & querystr ) {
 
   // find the corresponding types from the original fields
   // BOZO does not handle references to other objects, e.g. Contact.Account.Name
-  QString objname = query_resp.result->records[0]->type.c_str();
+  // extract the object name from the query string
+  QString objname = after_select.mid(frompos);
+  objname.remove(QRegExp(" (from|FROM)\\s+"));  // remove everything through next non-whitespace
+  objname.remove(QRegExp("\\s+.*"));            // remove everything at or after following whitespace
+
   QSqlRecord object_fields = drv->record(objname);
   stored_query_fields.clear();
   for (int i = 0; i < query_fieldnames.size(); ++i) {
